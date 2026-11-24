@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alpha Leader · Skills Bank</title>
+<meta name="description" content="Alpha Leader: an interactive video series by Skills Bank.">
+<style>[hidden]{display:none!important} body{margin:0} :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@font-face{font-family:"Anton";font-weight:400;src:url("fonts/anton-latin-400-normal.woff2") format("woff2");font-display:swap}@font-face{font-family:"IBM Plex Sans";font-weight:400;src:url("fonts/ibm-plex-sans-latin-400-normal.woff2") format("woff2");font-display:swap}@font-face{font-family:"IBM Plex Sans";font-weight:500;src:url("fonts/ibm-plex-sans-latin-500-normal.woff2") format("woff2");font-display:swap}@font-face{font-family:"IBM Plex Sans";font-weight:600;src:url("fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2");font-display:swap}@font-face{font-family:"IBM Plex Sans";font-weight:700;src:url("fonts/ibm-plex-sans-latin-700-normal.woff2") format("woff2");font-display:swap}@font-face{font-family:"IBM Plex Sans Arabic";font-weight:500;src:url("fonts/ibm-plex-sans-arabic-arabic-500-normal.woff2") format("woff2");font-display:swap}@font-face{font-family:"IBM Plex Sans Arabic";font-weight:600;src:url("fonts/ibm-plex-sans-arabic-arabic-600-normal.woff2") format("woff2");font-display:swap}@font-face{font-family:"IBM Plex Sans Arabic";font-weight:700;src:url("fonts/ibm-plex-sans-arabic-arabic-700-normal.woff2") format("woff2");font-display:swap}@font-face{font-family:"Cairo";font-weight:700;src:url("fonts/cairo-arabic-700-normal.woff2") format("woff2");font-display:swap}@font-face{font-family:"Cairo";font-weight:700;src:url("fonts/cairo-latin-700-normal.woff2") format("woff2");font-display:swap}@font-face{font-family:"Cairo";font-weight:800;src:url("fonts/cairo-arabic-800-normal.woff2") format("woff2");font-display:swap}@font-face{font-family:"Cairo";font-weight:800;src:url("fonts/cairo-latin-800-normal.woff2") format("woff2");font-display:swap}
+
+/* Layout: one player stage (16:9) with an overlay layer, a control rail beneath, and a slim progress card. Single committed look: Skills Bank navy. */
+:root {
+  --navy: #080828; --navy-2: #11113f; --navy-3: #1b1b5c; --line: rgba(235,244,255,.14);
+  --gold: #FFBC3A; --gold-ink: #2a1d00; --ice: #EBF4FF; --muted: #a9b4d6; --ok: #40BDA9; --bad: #F26444; --blue: #4D88E8;
+  --display: "Anton", "Impact", "Arial Narrow", sans-serif; --body: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif; --mono: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  color-scheme: dark;
+}
+html, body { background: var(--navy); color: var(--ice); }
+body { font-family: var(--body); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 18px 28px; }
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 14px; }
+header { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand .logo { height: 34px; width: auto; flex: none; }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(26px, 4vw, 40px); letter-spacing: .5px; margin: 0; line-height: 1; text-wrap: balance; }
+h1 em { color: var(--gold); font-style: normal; }
+.tag { font-family: var(--mono); font-size: 11px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+
+/* stage */
+.stage { position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 100%; background: #000; border-radius: 14px; overflow: hidden; container-type: inline-size; box-shadow: 0 20px 50px rgba(0,0,0,.45); }
+.stage video { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.stage:fullscreen { border-radius: 0; }
+.cap { position: absolute; left: 50%; bottom: 4.5cqw; transform: translateX(-50%); max-width: 62%; text-align: center; font-weight: 700; font-size: clamp(12px, 2.1cqw, 30px); line-height: 1.3; color: #fff; background: rgba(8,8,40,.78); padding: .25em .6em; border-radius: 6px; pointer-events: none; }
+.hot { position: absolute; right: 1.4cqw; bottom: 1.5cqw; display: flex; align-items: center; gap: .45em; font: 600 clamp(10px, 1.2cqw, 17px)/1 var(--body); color: var(--gold-ink); background: var(--gold); border: 2px solid #fff; border-radius: 999px; padding: .55em .95em .55em .55em; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.4); animation: pulse 1.6s ease-in-out infinite; }
+.hot .plus { display: grid; place-items: center; width: 1.5em; height: 1.5em; border-radius: 50%; background: var(--navy); color: var(--gold); font-size: 1.1em; }
+.hot:focus-visible, button:focus-visible { outline: 3px solid var(--ice); outline-offset: 3px; }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,188,58,.55), 0 8px 24px rgba(0,0,0,.4); } 50% { box-shadow: 0 0 0 12px rgba(255,188,58,0), 0 8px 24px rgba(0,0,0,.4); } }
+.start { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 40%, rgba(35,35,122,.72), rgba(8,8,40,.94)); text-align: center; padding: 4cqw; }
+.start-inner { display: grid; gap: 1.6cqw; justify-items: center; }
+.start h2 { font: 400 clamp(24px, 6cqw, 84px)/1 var(--display); margin: 0; }
+.start h2 em { color: var(--gold); font-style: normal; }
+.start p { margin: 0; color: var(--muted); font-size: clamp(12px, 1.7cqw, 20px); }
+.chips { display: flex; gap: .6em; flex-wrap: wrap; justify-content: center; }
+.chip { font: 700 clamp(10px, 1.3cqw, 15px)/1 var(--mono); letter-spacing: 1px; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: .55em .9em; color: var(--ice); }
+.big-play { font: 700 clamp(14px, 2cqw, 24px)/1 var(--body); background: var(--gold); color: var(--gold-ink); border: 0; border-radius: 999px; padding: .9em 1.8em; cursor: pointer; display: inline-flex; gap: .6em; align-items: center; }
+
+/* controls */
+.rail { display: grid; grid-template-columns: auto 1fr auto auto auto; align-items: center; gap: 12px; background: var(--navy-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+.ib { background: transparent; color: var(--ice); border: 1px solid var(--line); border-radius: 9px; height: 38px; min-width: 38px; padding: 0 10px; cursor: pointer; font: 700 13px/1 var(--body); display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.ib[aria-pressed="true"] { background: var(--navy-3); border-color: var(--gold); color: var(--gold); }
+.time { font: 700 12px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bar { position: relative; height: 34px; cursor: pointer; min-width: 0; touch-action: none; user-select: none; }
+.bar .knob { position: absolute; top: 10px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px rgba(242,180,0,.45); pointer-events: none; left: 0; }
+.buf { position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px; border-radius: 50%; border: 5px solid rgba(255,255,255,.25); border-top-color: var(--gold); animation: spin .8s linear infinite; pointer-events: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.bar .track { position: absolute; left: 0; right: 0; top: 15px; height: 5px; border-radius: 3px; background: rgba(235,244,255,.16); }
+.bar .fill { position: absolute; left: 0; top: 15px; height: 5px; border-radius: 3px; background: var(--gold); width: 0; }
+.bar .chap { position: absolute; top: 12px; width: 2px; height: 11px; background: rgba(235,244,255,.35); }
+.mk { position: absolute; top: 9px; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; border: 2px solid var(--navy-2); cursor: pointer; padding: 0; }
+.mk.ex { background: var(--gold); }
+.mk.q { background: var(--ice); border-radius: 3px; transform: rotate(45deg) scale(.82); }
+.mk.q.done-ok { background: var(--ok); } .mk.q.done-bad { background: var(--bad); }
+.mk.ex.seen { background: transparent; border: 2px solid var(--gold); }
+.status { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; justify-content: space-between; font-size: 13px; color: var(--muted); }
+.status b { color: var(--ice); font-variant-numeric: tabular-nums; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); vertical-align: middle; margin-right: 6px; }
+.dia { display: inline-block; width: 9px; height: 9px; background: var(--ice); transform: rotate(45deg); vertical-align: middle; margin-right: 7px; }
+.chapname { font: 700 12px var(--mono); letter-spacing: 1px; color: var(--gold); text-transform: uppercase; }
+
+/* layers (fixed so they work in fullscreen and on phones) */
+.layer { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); background: rgba(5,5,24,.72); backdrop-filter: blur(3px); overflow: auto; }
+.panel { width: min(760px, 100%); max-height: calc(100% - 8px); overflow: auto; background: var(--navy-2); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 30px 70px rgba(0,0,0,.55); }
+.panel-head { padding: 20px 24px 14px; border-bottom: 1px solid var(--line); display: grid; gap: 6px; }
+.kicker { font: 600 12px var(--body); letter-spacing: 1.6px; color: var(--gold); text-transform: uppercase; }
+.panel h3 { font: 400 clamp(24px, 4vw, 34px)/1.05 var(--display); margin: 0; letter-spacing: .3px; text-wrap: balance; }
+.panel-body { padding: 18px 24px; display: grid; gap: 12px; }
+.ex-card { background: var(--navy); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; }
+.ex-card .lab { font: 600 12px var(--body); letter-spacing: 1.2px; color: var(--gold); text-transform: uppercase; }
+.ex-card p { margin: 0; line-height: 1.55; font-size: 15.5px; }
+.ex-card .prompt { font: 400 16px/1.55 var(--body); color: var(--ice); background: rgba(235,244,255,.05); border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0; padding: 10px 14px; }
+.ex-card .prompt::before { content: "\201C"; color: var(--gold); font-weight: 700; margin-right: 2px; } .ex-card .prompt::after { content: "\201D"; color: var(--gold); font-weight: 700; margin-left: 2px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.weak .lab { color: var(--bad); } .strong .lab { color: var(--ok); }
+.tip { font-size: 13px; color: var(--muted); border-left: 3px solid var(--gold); padding-left: 10px; }
+.panel-foot { padding: 14px 24px 20px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; border-top: 1px solid var(--line); }
+.btn { font: 700 15px/1 var(--body); border-radius: 999px; padding: 13px 22px; cursor: pointer; border: 2px solid transparent; }
+.btn.primary { background: var(--gold); color: var(--gold-ink); }
+.btn.ghost { background: transparent; color: var(--ice); border-color: var(--line); }
+.countdown { flex: 1 1 160px; min-width: 0; display: grid; gap: 6px; font-size: 12px; color: var(--muted); }
+.countdown .cd-track { height: 4px; background: rgba(235,244,255,.12); border-radius: 2px; overflow: hidden; }
+.countdown .cd-fill { height: 100%; background: var(--gold); width: 100%; }
+
+/* quiz */
+.opts { display: grid; gap: 10px; }
+.opt { text-align: left; font: 600 16px/1.4 var(--body); color: var(--ice); background: var(--navy); border: 2px solid var(--line); border-radius: 12px; padding: 14px 16px; cursor: pointer; display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: start; }
+.opt .k { font: 700 13px var(--mono); width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--navy-3); color: var(--gold); }
+.opt:hover:not([disabled]) { border-color: var(--gold); }
+.opt.right { border-color: var(--ok); background: rgba(64,189,169,.12); }
+.opt.wrong { border-color: var(--bad); background: rgba(242,100,68,.12); }
+.opt[disabled] { cursor: default; }
+.feedback { border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; line-height: 1.5; }
+.feedback.ok { background: rgba(64,189,169,.14); border: 1px solid var(--ok); }
+.feedback.bad { background: rgba(242,100,68,.12); border: 1px solid var(--bad); }
+.feedback strong { font-family: var(--display); font-weight: 400; font-size: 24px; letter-spacing: .4px; }
+.feedback.ok strong { color: var(--ok); } .feedback.bad strong { color: var(--bad); }
+.shake { animation: shake .42s ease; }
+@keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-9px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-6px); } 80% { transform: translateX(4px); } }
+.pop { animation: pop .5s cubic-bezier(.2,1.6,.4,1); }
+@keyframes pop { 0% { transform: scale(.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+canvas.confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
+.score { font: 400 clamp(54px, 10vw, 96px)/1 var(--display); color: var(--gold); }
+.result-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.result-row span { font: 700 12px var(--mono); border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; }
+.result-row .r-ok { color: var(--ok); border-color: var(--ok); } .result-row .r-bad { color: var(--bad); border-color: var(--bad); }
+footer { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.rotate-tip { display: none; align-items: center; justify-content: center; gap: 8px; font-size: 12px; color: var(--muted); }
+/* phone portrait: compact chrome so the video gets the space */
+@media (max-width: 640px) {
+  body { padding-left: 10px; padding-right: 10px; padding-block: 10px 18px; }
+  .wrap { gap: 10px; }
+  .brand .logo { height: 24px; } h1 { font-size: 24px; } .tag { font-size: 9px; letter-spacing: 1.4px; }
+  .chapname { font-size: 11px; }
+  .stage { border-radius: 10px; }
+  .rail { grid-template-columns: auto 1fr auto auto; gap: 8px; row-gap: 2px; padding: 6px 10px; }
+  .rail .ib { height: 34px; min-width: 34px; padding: 0 8px; }
+  .rail .time { grid-row: 2; grid-column: 1 / -1; font-size: 11px; }
+  .mk { width: 12px; height: 12px; margin-left: -6px; top: 11px; border-width: 1.5px; }
+  .status .legend { display: none; }
+  .rotate-tip { display: flex; }
+}
+/* phone landscape, full screen, or theatre mode: video first */
+@media (orientation: landscape) and (max-height: 520px) {
+  body { padding: 4px 8px; }
+   header,  .status,  footer { display: none; }
+   .wrap { max-width: none; gap: 6px; }
+   .stage { width: min(100%, calc((100dvh - 62px) * 16 / 9)); margin-inline: auto; border-radius: 6px; }
+   .rail { width: min(100%, calc((100dvh - 62px) * 16 / 9)); margin-inline: auto; grid-template-columns: auto 1fr auto auto auto; padding: 4px 10px; gap: 10px; }
+   .rail .time { grid-row: auto; grid-column: auto; }
+  .rotate-tip { display: none; }
+}
+html:fullscreen body { padding: 4px 8px; }
+body.theater { padding: 4px 8px; }
+  html:fullscreen header, html:fullscreen .status, html:fullscreen footer { display: none; }
+  html:fullscreen .wrap { max-width: none; gap: 6px; }
+  html:fullscreen .stage { width: min(100%, calc((100dvh - 62px) * 16 / 9)); margin-inline: auto; border-radius: 6px; }
+  html:fullscreen .rail { width: min(100%, calc((100dvh - 62px) * 16 / 9)); margin-inline: auto; grid-template-columns: auto 1fr auto auto auto; padding: 4px 10px; gap: 10px; }
+  html:fullscreen .rail .time { grid-row: auto; grid-column: auto; }
+  body.theater header, body.theater .status, body.theater footer { display: none; }
+  body.theater .wrap { max-width: none; gap: 6px; }
+  body.theater .stage { width: min(100%, calc((100dvh - 62px) * 16 / 9)); margin-inline: auto; border-radius: 6px; }
+  body.theater .rail { width: min(100%, calc((100dvh - 62px) * 16 / 9)); margin-inline: auto; grid-template-columns: auto 1fr auto auto auto; padding: 4px 10px; gap: 10px; }
+  body.theater .rail .time { grid-row: auto; grid-column: auto; }
+html:fullscreen .rotate-tip, body.theater .rotate-tip { display: none; }
+
+@container (max-width: 560px) { .start p, .chips { display: none; } .start-inner { gap: 10px; } }
+@media (prefers-reduced-motion: reduce) { .hot { animation: none; } .shake, .pop { animation: none; } }
+
+/* series additions: XP counter, journey of modules, badge shelf, certificate */
+.xpbox { display: flex; align-items: baseline; gap: 6px; background: var(--navy-2); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; }
+.xp-num { font: 400 28px/1 var(--display); color: var(--gold); font-variant-numeric: tabular-nums; min-width: 2.2ch; text-align: right; }
+.xp-lab { font: 700 12px var(--mono); letter-spacing: 1.5px; color: var(--muted); }
+.xpbox.bump .xp-num { animation: bump .5s ease; }
+@keyframes bump { 40% { transform: scale(1.35); color: #fff; } }
+.journey { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.mod { position: relative; text-align: left; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: center; background: var(--navy-2); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; color: var(--ice); cursor: pointer; font: inherit; min-width: 0; }
+.mod .num { grid-row: span 2; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font: 400 20px/1 var(--display); background: var(--navy-3); color: var(--ice); }
+.mod .t { font: 600 15px/1.2 var(--body); min-width: 0; }
+.mod .s { font: 600 11.5px/1 var(--mono); letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+.mod[aria-current="true"] { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; }
+.mod[aria-current="true"] .num { background: var(--gold); color: var(--gold-ink); }
+.mod.done .num { background: var(--ok); color: var(--navy); }
+.mod.done .s { color: var(--ok); }
+.mod[disabled] { cursor: not-allowed; opacity: .5; }
+.modhead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.modtitle { font: 600 13px var(--body); color: var(--muted); }
+.shelf { background: var(--navy-2); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: grid; gap: 10px; }
+.shelf-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.linkbtn { background: none; border: 0; color: var(--muted); font: 600 12px var(--body); text-decoration: underline; cursor: pointer; padding: 4px; }
+.badges { display: flex; gap: 12px; flex-wrap: wrap; }
+.bdg { display: flex; align-items: center; gap: 10px; padding: 8px 14px 8px 8px; border-radius: 999px; border: 1px dashed var(--line); color: var(--muted); font: 600 14px var(--body); }
+.bdg .medal { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--navy-3); font: 400 16px var(--display); }
+.bdg.on { border-style: solid; border-color: var(--gold); color: var(--ice); }
+.bdg.on .medal { background: radial-gradient(circle at 35% 30%, #ffe08a, var(--gold) 60%, #c98a10); color: var(--gold-ink); }
+.bdg.cert { cursor: pointer; }
+.hint { font-size: 14.5px; color: var(--ice); }
+.xpgain { font: 400 22px/1 var(--display); color: var(--gold); letter-spacing: .4px; }
+.big-badge { display: flex; align-items: center; gap: 16px; padding: 14px; border-radius: 14px; background: rgba(255,188,58,.08); border: 1px solid rgba(255,188,58,.4); }
+.big-badge .medal { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle at 35% 30%, #ffe08a, var(--gold) 60%, #c98a10); font: 400 30px var(--display); color: var(--gold-ink); flex: none; }
+.big-badge b { display: block; font: 400 22px/1.1 var(--display); letter-spacing: .3px; color: var(--gold); }
+.field { display: grid; gap: 6px; }
+.field label { font: 600 13px var(--body); color: var(--muted); }
+.field input { font: 600 17px var(--body); color: var(--ice); background: var(--navy); border: 2px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.field input:focus-visible { outline: 3px solid var(--gold); outline-offset: 1px; }
+.cert-img { width: 100%; border-radius: 10px; border: 1px solid var(--line); display: block; }
+@media (max-width: 640px) {
+  header { flex-wrap: nowrap; } header .tag { display: none; }
+  .journey { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .mod { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; padding: 7px 6px; gap: 4px; }
+  .mod .num { grid-row: auto; width: 28px; height: 28px; font-size: 15px; }
+  .mod .t { font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .mod .s { display: none; }
+  .xpbox { padding: 5px 11px; flex: none; } .xp-num { font-size: 20px; }
+}
+@media (orientation: landscape) and (max-height: 520px) { .journey, .modhead, .shelf { display: none; } }
+html:fullscreen .journey, html:fullscreen .modhead, html:fullscreen .shelf, body.theater .journey, body.theater .modhead, body.theater .shelf { display: none; }
+
+a.btn { text-decoration: none; display: inline-flex; align-items: center; }
+
+/* ---- Alpha Leader bilingual additions ---- */
+html[lang="ar"] { --body: "IBM Plex Sans Arabic", "IBM Plex Sans", "Segoe UI", Tahoma, Arial, sans-serif; --mono: "IBM Plex Sans Arabic", "IBM Plex Sans", Tahoma, Arial, sans-serif; --display: "Cairo", "Anton", Tahoma, sans-serif; }
+html[lang="ar"] .tag, html[lang="ar"] .chip, html[lang="ar"] .kicker { letter-spacing: 0; text-transform: none; }
+html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3, html[lang="ar"] .feedback strong, html[lang="ar"] .start h2 { font-weight: 800; line-height: 1.25; }
+h1.prog { font-family: "Anton", Impact, sans-serif !important; font-weight: 400 !important; direction: ltr; unicode-bidi: isolate; }
+.hright { display: flex; align-items: center; gap: 10px; }
+.langbtn { font: 700 14px/1 var(--body); color: var(--navy, #0c0c3a); background: var(--gold, #FFBC3A); border: 2px solid #fff; border-radius: 999px; padding: 10px 16px; cursor: pointer; min-height: 40px; }
+.langbtn #langLab { font-family: "IBM Plex Sans Arabic", "IBM Plex Sans", Arial, sans-serif; }
+.bar, .time { direction: ltr; }
+[dir="rtl"] .hot { right: auto; left: 1.4cqw; padding: .55em .55em .55em .95em; }
+[dir="rtl"] .mod, [dir="rtl"] .opt { text-align: right; }
+[dir="rtl"] .dot, [dir="rtl"] .dia { margin-right: 0; margin-left: 7px; }
+[dir="rtl"] .tip { border-left: 0; padding-left: 0; border-right: 3px solid var(--gold); padding-right: 10px; }
+[dir="rtl"] .xp-num { text-align: left; }
+.mod.soon { opacity: .55; }
+.shelf-btns { display: inline-flex; gap: 14px; flex-wrap: wrap; }
+.panel.wide { max-width: 720px; }
+.field .row { display: flex; gap: 10px; flex-wrap: wrap; } .field .row input { flex: 1 1 220px; }
+.lb-head { display: flex; flex-direction: column; gap: 2px; margin: 18px 0 8px; } .lb-head span { font-size: 13px; color: var(--muted); }
+.lb { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 300px; overflow: auto; }
+.lb li { display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 10px; background: rgba(235,244,255,.05); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; }
+.lb .rk { font: 400 22px/1 "Anton", Impact, sans-serif; color: var(--muted); text-align: center; }
+.lb .nm { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .lb .nm em { font-style: normal; color: var(--gold); font-weight: 600; }
+.lb .pt { font: 400 20px/1 "Anton", Impact, sans-serif; color: var(--gold); direction: ltr; }
+.lb li.top1 .rk { color: #FFBC3A; } .lb li.top2 .rk { color: #dfe6f3; } .lb li.top3 .rk { color: #d79a5a; }
+.lb li.me { border-color: var(--gold); background: rgba(255,188,58,.10); }
+.rail { direction: ltr; }
+#qScore, #exCount, .xp-num { direction: ltr; unicode-bidi: isolate; }
+h1.prog { white-space: nowrap; }
+footer span:first-child { direction: ltr; unicode-bidi: isolate; }
+@media (max-width: 480px) { h1.prog { font-size: 24px; } .langbtn { padding: 8px 12px; font-size: 13px; min-height: 36px; } }
+.wrap { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 640px) { h1.prog { font-size: 21px; } .hright { gap: 6px; } .brand { gap: 8px; } .xp-lab { display: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <img class="logo" src="data:image/png;base64,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" alt="Skills Bank">
+      <div>
+        <div class="tag" data-t="seriesTag"></div>
+        <h1 class="prog">Alpha <em>Leader</em></h1>
+      </div>
+    </div>
+    <div class="hright">
+      <button class="langbtn" id="langBtn" type="button" aria-label="Switch language"><span id="langLab">English</span></button>
+      <div class="xpbox" aria-live="polite"><span class="xp-num" id="xpNum">0</span><span class="xp-lab">XP</span></div>
+    </div>
+  </header>
+
+  <nav class="journey" id="journey" aria-label="Modules"></nav>
+
+  <div class="modhead"><div class="chapname" id="chapName"></div><div class="modtitle" id="modTitle"></div></div>
+
+  <div class="stage" id="stage">
+    <video id="vid" preload="metadata" playsinline></video>
+    <div class="cap" id="cap" hidden></div>
+    <div class="buf" id="buf" hidden aria-label="Loading"></div>
+    <button class="hot" id="hot" type="button" hidden><span class="plus" aria-hidden="true">+</span><span id="hotLabel"></span></button>
+    <div class="start" id="start">
+      <div class="start-inner">
+        <div class="tag" id="startTag"></div>
+        <h2 id="startTitle"></h2>
+        <p id="startSub" data-t="startSub"></p>
+        <div class="chips" id="startChips"></div>
+        <button class="big-play" id="startBtn" type="button" data-t="start"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="rail" role="group" aria-label="Video controls">
+    <button class="ib" id="playBtn" type="button" aria-label="Play">▶</button>
+    <div class="bar" id="bar" aria-label="Seek">
+      <div class="track"></div><div class="fill" id="fill"></div>
+      <div id="marks"></div><div class="knob" id="knob"></div>
+    </div>
+    <span class="time" id="time">0:00 / 0:00</span>
+    <button class="ib" id="ccBtn" type="button" aria-pressed="false">CC</button>
+    <button class="ib" id="fsBtn" type="button" aria-label="Full screen">⛶</button>
+  </div>
+
+  <div class="rotate-tip" data-t="rotate"></div>
+
+  <div class="status">
+    <div class="legend"><span><span class="dot"></span><span data-t="legendEx"></span></span><span><span class="dia"></span><span data-t="legendQ"></span></span><span data-t="legendCC"></span></div>
+    <div><span data-t="scenarios"></span> <b id="qScore">0 / 0</b> · <span data-t="examples"></span> <b id="exCount">0 / 0</b></div>
+  </div>
+
+  <section class="shelf" aria-label="Badges">
+    <div class="shelf-head"><span class="tag" data-t="yourBadges"></span><span class="shelf-btns"><button class="linkbtn" id="boardBtn" type="button" data-t="boardBtn"></button><button class="linkbtn" id="resetBtn" type="button" data-t="reset"></button></span></div>
+    <div class="badges" id="badges"></div>
+  </section>
+
+  <footer><span>© 2026 Skills Bank. All rights reserved.</span><span data-t="footer"></span></footer>
+</div>
+
+<div class="layer" id="layer" hidden></div>
+<canvas class="confetti" id="confetti" hidden></canvas>
+
+<script>
+const DATA = {"modules": [{"n": 1, "title": {"en": "Self-Regulation", "ar": "التنظيم الذاتي"}, "badge": {"en": "Calm Under Fire", "ar": "هادي تحت الضغط"}, "medal": "1", "soon": false, "v": {"en": {"src": "media/Self_Regulation_EN.mp4", "duration": 205.7, "scenes": [{"id": "brand", "s": 0.0, "e": 2.0}, {"id": "hook", "s": 2.0, "e": 23.0}, {"id": "define", "s": 23.0, "e": 43.5}, {"id": "goal", "s": 43.5, "e": 61.1}, {"id": "aware", "s": 61.1, "e": 81.77}, {"id": "triggers", "s": 81.77, "e": 115.73}, {"id": "own", "s": 115.73, "e": 138.07}, {"id": "stop", "s": 138.07, "e": 170.87}, {"id": "replay", "s": 170.87, "e": 187.93}, {"id": "close", "s": 187.93, "e": 200.7}], "cues": [{"s": 0.0, "e": 1.81, "t": "A Skills Bank original."}, {"s": 2.46, "e": 6.2, "t": "It's a Monday meeting, and a client says your report is wrong."}, {"s": 6.48, "e": 8.31, "t": "In front of your whole team."}, {"s": 8.87, "e": 11.75, "t": "Your face gets hot. Your heart races."}, {"s": 11.8, "e": 16.31, "t": "And before you can think, you've already answered... a little too sharply."}, {"s": 17.05, "e": 22.81, "t": "That moment, between what you feel and what you do, is where self-regulation lives."}, {"s": 23.46, "e": 31.27, "t": "Self-management, or self-regulation, is the ability to manage your actions, thoughts and feelings,"}, {"s": 31.18, "e": 32.73, "t": "in flexible ways, to get the results you want."}, {"s": 33.27, "e": 36.01, "t": "When it works well, it builds three things."}, {"s": 36.43, "e": 40.93, "t": "A sense of wellbeing. A sense of self-efficacy, or confidence."}, {"s": 41.21, "e": 43.28, "t": "And a sense of connection to others."}, {"s": 43.96, "e": 47.77, "t": "The goal is to treat your emotional responses as cues."}, {"s": 48.08, "e": 51.78, "t": "Cues for action, and for coping well in your relationships."}, {"s": 52.37, "e": 57.06, "t": "Anger can tell you a line was crossed. Worry can tell you something matters."}, {"s": 57.47, "e": 60.93, "t": "But to read the cue, you first need self-awareness."}, {"s": 61.58, "e": 66.63, "t": "Self-awareness means being aware of both our mood, and our thoughts about that mood."}, {"s": 67.04, "e": 72.77, "t": "It's the ability to read and understand your emotions, and to recognise their impact on others."}, {"s": 73.16, "e": 75.02, "t": "Not just: I'm angry."}, {"s": 75.18, "e": 81.59, "t": "But: I'm angry, I think he's disrespecting me, and my tone is making the whole room tense."}, {"s": 82.23, "e": 84.41, "t": "Then come emotional triggers."}, {"s": 84.82, "e": 91.53, "t": "Triggers often arise from the five senses: what you see, hear, smell, taste and touch."}, {"s": 92.09, "e": 98.91, "t": "A trigger can also be a memory or an experience that sets off a powerful reaction, whatever your mood is right now."}, {"s": 99.59, "e": 102.71, "t": "To find a trigger, look at the situation around you."}, {"s": 103.15, "e": 109.96, "t": "If you feel an intense reaction every time you go to the same doctor's office, the trigger may be the office itself."}, {"s": 110.45, "e": 115.56, "t": "At work, it might be a certain tone in a meeting, or one name in your inbox."}, {"s": 116.21, "e": 119.52, "t": "Recognising your triggers is also a responsibility."}, {"s": 119.92, "e": 124.73, "t": "Triggers explain a reaction. They are not an excuse for the behaviour."}, {"s": 125.38, "e": 127.94, "t": "Our reactions are survival responses."}, {"s": 128.32, "e": 133.57, "t": "Understanding them helps you be more understanding, even forgiving, of your own missteps..."}, {"s": 133.9, "e": 137.9, "t": "and then responsible enough to change the unconscious response."}, {"s": 138.53, "e": 140.54, "t": "So what do you do in the hot moment?"}, {"s": 140.99, "e": 142.86, "t": "Use the STOP practice."}, {"s": 143.51, "e": 149.66, "t": "S: stop. Pause, set it down, look away, disengage."}, {"s": 150.29, "e": 155.47, "t": "T: take a breath. Feel the full cycle of breathing in your body."}, {"s": 156.22, "e": 163.96, "t": "O: observe. First the sensations in your body, then your thoughts and emotions. Be curious."}, {"s": 164.66, "e": 170.51, "t": "P: proceed. Ask: what feels like a wise next step, now?"}, {"s": 171.32, "e": 172.84, "t": "Back to that Monday meeting."}, {"s": 173.2, "e": 176.97, "t": "Stop: you don't answer yet. Take a breath."}, {"s": 177.61, "e": 181.9, "t": "Observe: my face is hot, and I'm thinking he's attacking me."}, {"s": 182.67, "e": 188.37, "t": "Proceed: Thank you for flagging it. Let me check the numbers, and I'll come back to you within the hour."}, {"s": 188.39, "e": 191.05, "t": "Self-regulation, in four moves."}, {"s": 191.43, "e": 197.32, "t": "Know your mood, and your thoughts about it. Spot your triggers. Own your response."}, {"s": 197.5, "e": 199.96, "t": "And when it gets hot... STOP."}], "chapters": [{"t": 2.0, "n": "Monday, 10 AM"}, {"t": 23.0, "n": "What it is"}, {"t": 43.5, "n": "Emotions are cues"}, {"t": 61.1, "n": "Self-awareness"}, {"t": 81.77, "n": "Emotional triggers"}, {"t": 115.73, "n": "Your responsibility"}, {"t": 138.07, "n": "The STOP practice"}, {"t": 170.87, "n": "Back to Monday"}, {"t": 187.93, "n": "Recap"}], "hot": {"e1": [82.53, 115.33], "e2": [61.87, 81.37], "e3": [138.83, 170.47]}, "examples": {"e1": {"label": "Examples: Triggers at work", "title": "Triggers at work", "body": "<div class=\"ex-card\"><p>Hearing: a manager&#x27;s sharp tone in front of the team.</p></div><div class=\"ex-card\"><p>Seeing: one client&#x27;s name in your inbox before you open the email.</p></div><div class=\"ex-card\"><p>Memory: a review meeting that reminds you of a bad appraisal years ago.</p></div>"}, "e2": {"label": "Examples: Mood vs thoughts about the mood", "title": "Mood vs thoughts about the mood", "body": "<div class=\"ex-card\"><p>Mood: &#x27;I&#x27;m tense.&#x27;</p></div><div class=\"ex-card\"><p>Thought about it: &#x27;If I&#x27;m tense, I&#x27;ll mess up this presentation.&#x27;</p></div><div class=\"ex-card\"><p>Impact: &#x27;My short answers are making my team stop asking questions.&#x27;</p></div>"}, "e3": {"label": "Examples: STOP in 30 seconds", "title": "STOP in 30 seconds", "body": "<div class=\"ex-card\"><p>S: put the phone face down before replying to an angry email.</p></div><div class=\"ex-card\"><p>T: one slow breath, in and out.</p></div><div class=\"ex-card\"><p>O: &#x27;Shoulders tight, I&#x27;m thinking he&#x27;s blaming me.&#x27;</p></div><div class=\"ex-card\"><p>P: &#x27;I&#x27;ll reply after lunch, with the facts.&#x27;</p></div>"}}, "quiz": [{"t": 60.75, "q": "A colleague criticises your plan in a meeting and you feel your face get hot. What does self-regulation ask of you first?", "o": ["Hide the feeling and smile", "Leave the meeting", "Treat the feeling as a cue, and pause before you respond", "Answer quickly so you don't look weak"], "a": 2, "why": "Self-regulation treats emotional responses as cues for action, not something to hide or obey.", "hint": "Is the feeling something to hide, obey, or read?", "id": "q1"}, {"t": 115.38, "q": "You feel a strong reaction every Sunday at the weekly review. How do you find the trigger?", "o": ["Ignore it; it will pass", "Look at the situation around you: what you see, hear, and what it reminds you of", "Assume it's your mood that day", "Ask HR to cancel the meeting"], "a": 1, "why": "To identify a trigger, look at the situation around you; a reaction that repeats in the same place points to it.", "hint": "Where does the reaction keep happening?", "id": "q2"}, {"t": 137.72, "q": "Mona says: 'I shouted because that client always triggers me.' What is the best response?", "o": ["'It's fine, everyone shouts.'", "'Then avoid that client.'", "'Triggers aren't real.'", "'A trigger explains the reaction, but you still own the behaviour. What could you do next time?'"], "a": 3, "why": "Triggers explain a reaction; they are not an excuse. Recognising them is also a responsibility.", "hint": "Does a trigger explain the reaction, or excuse it?", "id": "q3"}, {"t": 170.52, "q": "In STOP, what does 'O' ask you to do?", "o": ["Open the discussion", "Object to the criticism", "Observe your body first, then your thoughts and emotions", "Obey the first feeling"], "a": 2, "why": "O is Observe: bodily sensations first, then thoughts and emotions, with curiosity.", "hint": "S stops, T breathes. What comes before you proceed?", "id": "q4"}]}, "ar": {"src": "media/Self_Regulation_AR.mp4", "duration": 207.6, "scenes": [{"id": "brand", "s": 0.0, "e": 1.9}, {"id": "hook", "s": 1.9, "e": 21.57}, {"id": "define", "s": 21.57, "e": 44.63}, {"id": "goal", "s": 44.63, "e": 64.8}, {"id": "aware", "s": 64.8, "e": 84.13}, {"id": "triggers", "s": 84.13, "e": 119.03}, {"id": "own", "s": 119.03, "e": 139.73}, {"id": "stop", "s": 139.73, "e": 175.57}, {"id": "replay", "s": 175.57, "e": 189.97}, {"id": "close", "s": 189.97, "e": 202.6}], "cues": [{"s": 0.0, "e": 2.04, "t": "من إنتاج سكيلز بانك."}, {"s": 2.37, "e": 6.56, "t": "اجتماع يوم الاتنين، والعميل بيقول إن التقرير بتاعك غلط."}, {"s": 6.54, "e": 8.02, "t": "قدّام الفريق كله."}, {"s": 8.31, "e": 11.14, "t": "وشّك بيسخن، وقلبك بيدق بسرعة."}, {"s": 11.34, "e": 14.88, "t": "وقبل ما تلحق تفكّر... تلاقي نفسك رديت بحدّة."}, {"s": 15.26, "e": 21.64, "t": "اللحظة دي، اللي بين اللي إنت حاسس بيه واللي إنت بتعمله، هي دي مساحة التنظيم الذاتي."}, {"s": 22.02, "e": 28.6, "t": "إدارة الذات، أو التنظيم الذاتي، هي قدرتك إنك تدير تصرفاتك وأفكارك ومشاعرك،"}, {"s": 28.5, "e": 31.93, "t": "بمرونة، عشان توصل للنتيجة اللي إنت عايزها."}, {"s": 32.12, "e": 36.2, "t": "ولما يكون التنظيم الذاتي قوي، بيبني عندك تلات حاجات."}, {"s": 36.37, "e": 40.98, "t": "إحساس بالراحة النفسية، وإحساس بالكفاءة والثقة في نفسك."}, {"s": 41.16, "e": 44.83, "t": "وإحساس إنك قريب ومتواصل مع اللي حواليك."}, {"s": 45.1, "e": 49.24, "t": "الهدف إنك تتعامل مع ردود فعلك العاطفية كإشارات."}, {"s": 49.46, "e": 53.76, "t": "إشارات تقولك تعمل إيه، وتتعامل إزاي صح مع الناس."}, {"s": 53.98, "e": 60.49, "t": "الغضب ممكن يقولك إن فيه حد اتعدّى. والقلق ممكن يقولك إن الحاجة دي مهمة بالنسبالك."}, {"s": 60.62, "e": 65.05, "t": "بس عشان تقرا الإشارة، لازم الأول يبقى عندك وعي بذاتك."}, {"s": 65.26, "e": 70.75, "t": "الوعي بالذات يعني إنك واخد بالك من مزاجك، ومن أفكارك عن المزاج ده كمان."}, {"s": 70.98, "e": 75.8, "t": "يعني تقدر تقرا مشاعرك وتفهمها، وتعرف تأثيرها على اللي حواليك."}, {"s": 75.89, "e": 77.75, "t": "مش بس: أنا متضايق."}, {"s": 77.81, "e": 84.36, "t": "لأ: أنا متضايق، وحاسس إنه مش محترمني، ونبرة صوتي مخلية الأوضة كلها متوترة."}, {"s": 84.6, "e": 87.67, "t": "وبعدين ييجي دور المحفّزات العاطفية."}, {"s": 87.9, "e": 96.0, "t": "المحفّزات غالبًا بتيجي من الحواس الخمسة: اللي بتشوفه، وبتسمعه، وبتشمّه، وبتدوقه، وبتلمسه."}, {"s": 96.15, "e": 103.43, "t": "والمحفّز ممكن يكون ذكرى أو تجربة قديمة، بتعمل عندك رد فعل قوي، مهما كان مزاجك دلوقتي."}, {"s": 103.63, "e": 107.12, "t": "وعشان تعرف المحفّز، بُص على الموقف اللي حواليك."}, {"s": 107.24, "e": 114.15, "t": "لو كل مرة بتروح عند نفس الدكتور بتحس برد فعل قوي، يبقى ممكن العيادة نفسها هي المحفّز."}, {"s": 114.29, "e": 119.24, "t": "وفي الشغل، ممكن يكون نبرة معينة في اجتماع، أو اسم واحد في الإيميل."}, {"s": 119.5, "e": 122.5, "t": "إنك تعرف محفّزاتك ده كمان مسؤولية."}, {"s": 122.7, "e": 127.55, "t": "المحفّز بيفسّر رد الفعل، لكنه مش مبرّر للتصرف."}, {"s": 127.75, "e": 130.62, "t": "ردود أفعالنا دي ردود فعل للنجاة."}, {"s": 130.77, "e": 134.97, "t": "وفهمها بيخليك أهدى وأكثر تسامح مع غلطاتك..."}, {"s": 135.03, "e": 140.14, "t": "وبعدها مسؤول إنك تغيّر رد الفعل اللي بيطلع منك من غير ما تحس."}, {"s": 140.2, "e": 142.75, "t": "طب تعمل إيه في لحظة الانفعال دي؟"}, {"s": 142.78, "e": 145.99, "t": "استخدم تمرين STOP."}, {"s": 146.22, "e": 153.38, "t": "S يعني: Stop، اقف. خُد وقفة، سيب اللي في إيدك، بُص بعيد، وابعد شوية."}, {"s": 153.63, "e": 160.72, "t": "T يعني: Take a breath، خُد نفس. وحس بالنفس كله داخل وخارج في جسمك."}, {"s": 160.94, "e": 169.6, "t": "O يعني: Observe، لاحظ. لاحظ الأول إحساس جسمك، وبعدين أفكارك ومشاعرك. وخليك فضولي."}, {"s": 169.88, "e": 175.81, "t": "P يعني: Proceed، كمّل. واسأل نفسك: إيه الخطوة الحكيمة دلوقتي؟"}, {"s": 176.02, "e": 177.81, "t": "نرجع لاجتماع يوم الاتنين."}, {"s": 177.92, "e": 182.1, "t": "Stop: متردّش لسه. خُد نفس."}, {"s": 182.28, "e": 184.97, "t": "Observe: وشّي سخن، وأنا حاسس إنه بيهاجمني."}, {"s": 185.15, "e": 190.24, "t": "Proceed: شكرًا إنك نبّهتني. هراجع الأرقام وأرجعلك خلال ساعة."}, {"s": 190.44, "e": 193.0, "t": "التنظيم الذاتي في أربع خطوات."}, {"s": 193.15, "e": 199.32, "t": "اعرف مزاجك وأفكارك عنه. اكتشف محفّزاتك. خليك مسؤول عن رد فعلك."}, {"s": 199.43, "e": 201.84, "t": "ولما الموقف يسخن... STOP."}], "chapters": [{"t": 1.9, "n": "الاتنين، 10 الصبح"}, {"t": 21.57, "n": "يعني إيه"}, {"t": 44.63, "n": "مشاعرك إشارات"}, {"t": 64.8, "n": "الوعي بالذات"}, {"t": 84.13, "n": "المحفّزات العاطفية"}, {"t": 119.03, "n": "مسؤوليتك"}, {"t": 139.73, "n": "تمرين STOP"}, {"t": 175.57, "n": "نرجع للاتنين"}, {"t": 189.97, "n": "الخلاصة"}], "hot": {"e1": [84.9, 118.63], "e2": [65.57, 83.73], "e3": [140.5, 175.17]}, "examples": {"e1": {"label": "أمثلة: محفّزات في الشغل", "title": "محفّزات في الشغل", "body": "<div class=\"ex-card\"><p>السمع: نبرة حادة من مديرك قدّام الفريق.</p></div><div class=\"ex-card\"><p>النظر: اسم عميل معيّن في الإيميل قبل ما تفتحه.</p></div><div class=\"ex-card\"><p>الذكرى: اجتماع تقييم بيفكّرك بتقييم وحش من سنين.</p></div>"}, "e2": {"label": "أمثلة: المزاج والأفكار عن المزاج", "title": "المزاج والأفكار عن المزاج", "body": "<div class=\"ex-card\"><p>المزاج: «أنا متوتر».</p></div><div class=\"ex-card\"><p>الفكرة عنه: «لو أنا متوتر، هبوّظ العرض».</p></div><div class=\"ex-card\"><p>التأثير: «ردودي القصيرة مخلية الفريق بطّل يسأل».</p></div>"}, "e3": {"label": "أمثلة: STOP في 30 ثانية", "title": "STOP في 30 ثانية", "body": "<div class=\"ex-card\"><p>S: اقلب الموبايل قبل ما ترد على إيميل متعصّب.</p></div><div class=\"ex-card\"><p>T: نفس واحد بطيء، داخل وخارج.</p></div><div class=\"ex-card\"><p>O: «كتافي مشدودة، وحاسس إنه بيلومني».</p></div><div class=\"ex-card\"><p>P: «هرد بعد الغدا، وبالحقائق».</p></div>"}}, "quiz": [{"t": 64.45, "q": "زميلك انتقد خطتك في اجتماع، وحسيت وشّك بيسخن. التنظيم الذاتي بيطلب منك إيه الأول؟", "o": ["تخبّي إحساسك وتبتسم", "تسيب الاجتماع", "تعتبر الإحساس إشارة، وتاخد وقفة قبل ما ترد", "ترد بسرعة عشان متبانش ضعيف"], "a": 2, "why": "التنظيم الذاتي بيتعامل مع ردود الفعل العاطفية كإشارات، مش حاجة نخبيها ولا نمشي وراها.", "hint": "الإحساس ده حاجة تخبّيها، ولا تمشي وراها، ولا تقراها؟", "id": "q1"}, {"t": 118.68, "q": "بتحس برد فعل قوي كل أحد في الاجتماع الأسبوعي. تعرف المحفّز إزاي؟", "o": ["تتجاهله، هيعدّي", "تبص على الموقف اللي حواليك: بتشوف وتسمع إيه، وبيفكّرك بإيه", "تفترض إنه مزاجك اليوم ده", "تطلب من الـ HR يلغوا الاجتماع"], "a": 1, "why": "عشان تعرف المحفّز بُص على الموقف؛ رد الفعل اللي بيتكرر في نفس المكان بيدلّك عليه.", "hint": "رد الفعل بيتكرر فين؟", "id": "q2"}, {"t": 139.38, "q": "منى قالت: «زعّقت عشان العميل ده دايمًا بيستفزني». إيه أحسن رد؟", "o": ["«عادي، كلنا بنزعّق»", "«خلاص ابعدي عن العميل ده»", "«مفيش حاجة اسمها محفّزات»", "«المحفّز بيفسّر رد الفعل، بس إنتي برضه مسؤولة عن التصرف. ممكن تعملي إيه المرة الجاية؟»"], "a": 3, "why": "المحفّز بيفسّر رد الفعل، لكنه مش مبرّر. ومعرفته مسؤولية.", "hint": "المحفّز بيفسّر رد الفعل، ولا بيبرّره؟", "id": "q3"}, {"t": 175.22, "q": "في تمرين STOP، حرف O بيطلب منك إيه؟", "o": ["تفتح النقاش", "تعترض على الانتقاد", "تلاحظ جسمك الأول، وبعدين أفكارك ومشاعرك", "تمشي ورا أول إحساس"], "a": 2, "why": "O يعني Observe: إحساس الجسم الأول، وبعدين الأفكار والمشاعر، بفضول.", "hint": "S وقفة، وT نفس. إيه اللي قبل ما تكمّل؟", "id": "q4"}]}}}, {"n": 2, "title": {"en": "Types of Power", "ar": "أنواع القوة"}, "badge": {"en": "Wise Power", "ar": "القوة الحكيمة"}, "medal": "2", "soon": true, "v": null}, {"n": 3, "title": {"en": "The Coaching Conversation: Six Steps", "ar": "محادثة الكوتشينج: الست خطوات"}, "badge": {"en": "Coaching Manager", "ar": "المدير الكوتش"}, "medal": "3", "soon": true, "v": null}]};
+/* Alpha Leader · bilingual interactive video series (Skills Bank).
+   DATA (injected): { modules: [{ n, title:{en,ar}, badge:{en,ar}, medal, soon, v:{ en:{src,duration,scenes,cues,chapters,hot,examples,quiz}, ar:{...} } }] }
+   Progress, XP, badges and the leaderboard live on this device only. */
+const $ = (id) => document.getElementById(id);
+const MODS = DATA.modules;
+const AV = MODS.map((m, i) => i).filter((i) => !MODS[i].soon);           // modules that have videos
+const vid = $("vid"), layer = $("layer"), hot = $("hot");
+const XP = { finish: 100, example: 10, first: 50, second: 20 };
+const KEY = "sb-alpha-leader-v1", LKEY = "sb-alpha-leader-lang";
+const fmt = (s) => { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+const xpt = (n, plus = true) => `<bdi dir="ltr">${plus ? "+" : ""}${n} XP</bdi>`;
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+const STR = {
+  en: { seriesTag: "Interactive video series · Skills Bank", startSub: "Watch, open the example cards, and answer scenario questions to earn XP.", start: "▶ Start",
+    rotate: "Turn your phone sideways, or tap ⛶, for a bigger video", legendEx: "Examples: tap the gold button when it appears · gold dots jump to them", legendQ: "Scenario question",
+    legendCC: "CC: captions", scenarios: "Scenarios", examples: "Examples", yourBadges: "Your badges", reset: "Start again", boardBtn: "Leaderboard",
+    footer: "Designed and produced by Skills Bank Learning & Development", video: "Video", of: "of", soon: "Coming soon", locked: (i) => "Locked · finish video " + i + " first",
+    completed: "Completed", ready: "Ready", welcome: "Welcome", orig: "A Skills Bank original", chips: (d, e, q) => [d + " video", e + " example cards", q + " scenarios"],
+    exKicker: "example card", cont: "Continue video", close: "Close", keep: "Keep reading", cd: (s) => "Video continues in " + s + "s", hold: "Take your time. Press Continue when you are ready.",
+    scen: (n, t) => "Scenario " + n + " of " + t, skip: " · answer to skip ahead", firstTry: "first try", notQuite: "Not quite. Try once more.", hint: "Hint",
+    correct: "Correct! Well done.", second: "Got it on the second try.", answer: "Here's the answer.", best: "The best answer is", complete: "complete",
+    allRight: "every scenario right.", strong: "strong result.", another: "worth another look.", unlocked: "Badge unlocked.", already: "Badge already on your shelf.",
+    exOpened: (a, b) => "Example cards opened: <b>" + a + " of " + b + "</b>. Tap a gold dot on the timeline to jump back to one.", total: "Total so far", nextUnlocked: " The next video is now unlocked.",
+    next: "Next", finalBtn: "See your final score", again: "Watch again", cert: "Certificate", certAfter: "Certificate (after all videos)", certOpen: "Certificate: open",
+    finalK: "All videos complete", finalH: "Your final score", nameL: "Your name, for the leaderboard and certificate", save: "Save my score",
+    board: "Leaderboard · this device", boardNote: "Scores of everyone who finished on this device.", you: "You", noBoard: "No finished scores on this device yet.",
+    makeCert: "Create certificate", dl: "Download PNG", newP: "New trainee on this device", resetQ: "Clear your XP, badges and answers on this device?", resetYes: "Yes, start again",
+    resetNo: "Keep my progress", resetNote: "The leaderboard is kept.", certTitle: "Your certificate", certLine1: "This certifies that", certLine2: (xp) => "completed the Alpha Leader video series, earning " + xp + " XP.",
+    certTop: "A SKILLS BANK ORIGINAL · CERTIFICATE OF COMPLETION", soonNote: "This video is coming soon.", pts: "XP", rank: "#" },
+  ar: { seriesTag: "سلسلة فيديو تفاعلية · سكيلز بانك", startSub: "اتفرّج، وافتح كروت الأمثلة، وجاوب على أسئلة المواقف عشان تجمع XP.", start: "▶ ابدأ",
+    rotate: "لف الموبايل بالعرض، أو دوس ⛶، عشان الفيديو يكبر", legendEx: "أمثلة: دوس على الزرار الدهبي لما يظهر · النقط الدهبي بتوديك ليها", legendQ: "سؤال موقف",
+    legendCC: "CC: الترجمة", scenarios: "المواقف", examples: "الأمثلة", yourBadges: "البادجات بتاعتك", reset: "ابدأ من الأول", boardBtn: "لوحة الترتيب",
+    footer: "تصميم وإنتاج سكيلز بانك · التعلّم والتطوير", video: "فيديو", of: "من", soon: "قريبًا", locked: (i) => "مقفول · خلّص فيديو " + i + " الأول",
+    completed: "خلصته", ready: "جاهز", welcome: "أهلًا بيك", orig: "من إنتاج سكيلز بانك", chips: (d, e, q) => ["فيديو " + d, e + " كروت أمثلة", q + " مواقف"],
+    exKicker: "كارت أمثلة", cont: "كمّل الفيديو", close: "اقفل", keep: "سيبني أقرا", cd: (s) => "الفيديو هيكمّل بعد " + s + " ثانية", hold: "خُد وقتك. دوس كمّل لما تخلص.",
+    scen: (n, t) => "موقف " + n + " من " + t, skip: " · جاوب عشان تعدّي", firstTry: "من أول مرة", notQuite: "مش بالظبط. جرّب تاني.", hint: "تلميح",
+    correct: "صح! برافو.", second: "جبتها من تاني مرة.", answer: "دي الإجابة.", best: "أحسن إجابة هي", complete: "خلص",
+    allRight: "كل المواقف صح.", strong: "نتيجة قوية.", another: "يستاهل تتفرّج تاني.", unlocked: "فتحت البادج.", already: "البادج معاك من قبل كده.",
+    exOpened: (a, b) => "كروت الأمثلة اللي فتحتها: <b>" + a + " من " + b + "</b>. دوس على نقطة دهبي في الشريط عشان ترجعلها.", total: "مجموعك لحد دلوقتي", nextUnlocked: " الفيديو الجاي اتفتح.",
+    next: "اللي بعده", finalBtn: "شوف نتيجتك النهائية", again: "اتفرّج تاني", cert: "الشهادة", certAfter: "الشهادة (بعد كل الفيديوهات)", certOpen: "الشهادة: افتح",
+    finalK: "خلّصت كل الفيديوهات", finalH: "نتيجتك النهائية", nameL: "اسمك، للوحة الترتيب والشهادة", save: "سجّل نتيجتي",
+    board: "لوحة الترتيب · الجهاز ده", boardNote: "نتايج كل اللي خلّصوا على الجهاز ده.", you: "إنت", noBoard: "لسه مفيش نتايج على الجهاز ده.",
+    makeCert: "اعمل الشهادة", dl: "نزّل PNG", newP: "متدرب جديد على الجهاز ده", resetQ: "تمسح الـXP والبادجات والإجابات من الجهاز ده؟", resetYes: "أيوه، ابدأ من الأول",
+    resetNo: "سيب تقدّمي", resetNote: "لوحة الترتيب هتفضل زي ما هي.", certTitle: "شهادتك", certLine1: "تشهد سكيلز بانك بأن", certLine2: (xp) => "أتمّ سلسلة فيديوهات Alpha Leader وجمع " + xp + " نقطة.",
+    certTop: "من إنتاج سكيلز بانك · شهادة إتمام", soonNote: "الفيديو ده قريبًا.", pts: "XP", rank: "#" },
+};
+let LANG = "ar"; try { LANG = localStorage.getItem(LKEY) || "ar"; } catch (e) {}
+const T = () => STR[LANG];
+const V = (m) => m.v[LANG];
+
+/* ---------- saved progress (this device only) ---------- */
+const blank = () => ({ xp: 0, name: "", mods: MODS.map(() => ({ answered: {}, seen: {}, done: false })) });
+let P = blank(), BOARD = [];
+try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && s.P && s.P.mods && s.P.mods.length === MODS.length) { P = s.P; BOARD = s.B || []; } } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ P, B: BOARD })); } catch (e) {} };
+const unlocked = (i) => !MODS[i].soon && (i === 0 || P.mods[i - 1].done);
+const allDone = () => AV.every((i) => P.mods[i].done);
+
+let cur = 0, M = MODS[0], S = P.mods[0];
+const st = { modal: null, ccOn: false, started: false, ended: false, lastT: 0, wasPlaying: false, resumeAt: null, scrubbing: false, tries: {} };
+const DUR = () => V(M).duration;
+
+function gainXP(n) { P.xp += n; save(); $("xpNum").textContent = P.xp; const b = document.querySelector(".xpbox"); b.classList.remove("bump"); void b.offsetWidth; b.classList.add("bump"); }
+
+function applyLang() {
+  document.documentElement.lang = LANG; document.documentElement.dir = LANG === "ar" ? "rtl" : "ltr";
+  document.querySelectorAll("[data-t]").forEach((e) => { e.textContent = T()[e.dataset.t]; });
+  $("langLab").textContent = LANG === "ar" ? "English" : "عربي";
+  $("ccBtn").title = "CC";
+}
+
+function renderJourney() {
+  $("journey").innerHTML = MODS.map((m, i) => {
+    const s = P.mods[i], lock = !unlocked(i);
+    const label = m.soon ? T().soon : lock ? T().locked(i) : s.done ? T().completed + " · " + m.badge[LANG] : T().video + " " + (i + 1) + " · " + fmt(V(m).duration);
+    return `<button class="mod${s.done ? " done" : ""}${m.soon ? " soon" : ""}" type="button" data-i="${i}" ${lock ? "disabled" : ""} aria-current="${i === cur}">
+      <span class="num">${s.done ? "✓" : i + 1}</span><span class="t">${esc(m.title[LANG])}</span><span class="s">${esc(label)}</span></button>`;
+  }).join("");
+  $("journey").querySelectorAll(".mod").forEach((b) => b.addEventListener("click", () => { if (!b.disabled) loadModule(+b.dataset.i, true); }));
+}
+function renderBadges() {
+  const items = MODS.map((m, i) => `<span class="bdg${P.mods[i].done ? " on" : ""}"><span class="medal">${P.mods[i].done ? m.medal : i + 1}</span>${esc(m.badge[LANG])}</span>`);
+  items.push(allDone() ? `<button class="bdg on cert" id="certBtn" type="button"><span class="medal">★</span>${T().certOpen}</button>` : `<span class="bdg"><span class="medal">★</span>${T().certAfter}</span>`);
+  $("badges").innerHTML = items.join("");
+  if ($("certBtn")) $("certBtn").addEventListener("click", () => showFinal(false));
+}
+function scoreLine() {
+  const right = Object.values(S.answered).filter((v) => v > 0).length;
+  $("qScore").textContent = right + " / " + V(M).quiz.length;
+  $("exCount").textContent = Object.keys(S.seen).length + " / " + Object.keys(V(M).hot).length;
+}
+function headTexts() {
+  $("modTitle").textContent = T().video + " " + M.n + " " + T().of + " " + MODS.length + " · " + M.title[LANG];
+  $("startTitle").innerHTML = esc(M.title[LANG]).replace(/^(\S+)/, "<em>$1</em>");
+  $("startTag").textContent = "Alpha Leader · " + T().orig + " · " + T().video + " " + M.n + " " + T().of + " " + MODS.length;
+  $("startChips").innerHTML = T().chips(fmt(DUR()), Object.keys(V(M).hot).length, V(M).quiz.length).map((c) => `<span class="chip">${esc(c)}</span>`).join("");
+}
+function loadModule(i, fromUser, at) {
+  if (st.modal) closeLayer();
+  cur = i; M = MODS[i]; S = P.mods[i];
+  Object.assign(st, { started: false, ended: false, lastT: at || 0, resumeAt: null, tries: {} });
+  vid.pause(); vid.src = V(M).src; vid.load(); if (at) { vid.addEventListener("loadedmetadata", () => { vid.currentTime = at; }, { once: true }); }
+  headTexts(); $("start").hidden = false; $("chapName").textContent = T().ready;
+  renderJourney(); renderBadges(); buildMarks(); scoreLine(); showPos(at || 0);
+  try { history.replaceState(null, "", "#video-" + M.n); } catch (e) {}
+  if (fromUser) window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ---------- language switch: same moment, other language ---------- */
+function mapTime(t, from, to) {
+  const a = M.v[from].scenes, b = M.v[to].scenes;
+  const sc = a.filter((s) => t >= s.s).pop(); if (!sc) return 0;
+  const tb = b.find((s) => s.id === sc.id); if (!tb) return 0;
+  const f = Math.min(1, (t - sc.s) / Math.max(0.1, sc.e - sc.s)); return tb.s + f * (tb.e - tb.s);
+}
+$("langBtn").addEventListener("click", () => {
+  const from = LANG, to = LANG === "ar" ? "en" : "ar"; const wasPlaying = !vid.paused && st.started, t = vid.currentTime || 0;
+  const modal = st.modal; if (modal === "ex" || modal === "quiz") closeLayer();
+  LANG = to; try { localStorage.setItem(LKEY, LANG); } catch (e) {}
+  applyLang(); $("xpNum").textContent = P.xp;
+  if (M.soon) { renderJourney(); renderBadges(); return; }
+  const nt = st.started ? mapTime(t, from, to) : 0; const started = st.started, ended = st.ended;
+  loadModule(cur, false, nt);
+  if (started && !ended) { st.started = true; $("start").hidden = true; st.lastT = nt; if (wasPlaying) vid.play().catch(() => {}); }
+  if (modal === "final" || modal === "board") showFinal(modal === "board");
+});
+
+/* ---------- progress bar markers (timeline always runs left to right) ---------- */
+function buildMarks() {
+  const m = $("marks"); m.innerHTML = ""; const v = V(M);
+  v.chapters.forEach((c) => { const d = document.createElement("div"); d.className = "chap"; d.style.left = (c.t / DUR() * 100) + "%"; d.title = c.n; m.appendChild(d); });
+  Object.entries(v.hot).forEach(([k, [s]]) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "mk ex" + (S.seen[k] ? " seen" : ""); b.style.left = (s / DUR() * 100) + "%";
+    b.title = v.examples[k].label; b.setAttribute("aria-label", v.examples[k].label); b.dataset.t = s; m.appendChild(b);
+  });
+  v.quiz.forEach((q) => { const d = document.createElement("div"); const r = S.answered[q.id];
+    d.className = "mk q" + (r === undefined ? "" : r > 0 ? " done-ok" : " done-bad"); d.style.left = (q.t / DUR() * 100) + "%"; m.appendChild(d); });
+}
+
+/* ---------- playback ---------- */
+function play() { st.started = true; $("start").hidden = true; vid.play().catch(() => {}); }
+function pause() { vid.pause(); }
+$("startBtn").addEventListener("click", () => { unlockAudio(); play(); });
+$("playBtn").addEventListener("click", () => { unlockAudio(); if (st.ended) restart(); else (vid.paused ? play() : pause()); });
+vid.addEventListener("play", () => { $("playBtn").textContent = "❚❚"; });
+vid.addEventListener("pause", () => { $("playBtn").textContent = "▶"; });
+document.addEventListener("keydown", (e) => { if (e.code === "Space" && !st.modal && e.target === document.body) { e.preventDefault(); $("playBtn").click(); } });
+$("ccBtn").addEventListener("click", () => { st.ccOn = !st.ccOn; $("ccBtn").setAttribute("aria-pressed", String(st.ccOn)); tick(); });
+$("fsBtn").addEventListener("click", async () => {
+  const de = document.documentElement;
+  if (document.fullscreenElement) { try { await document.exitFullscreen(); } catch (e) {} return; }
+  if (document.body.classList.contains("theater")) { document.body.classList.remove("theater"); return; }
+  if (de.requestFullscreen) { try { await de.requestFullscreen({ navigationUI: "hide" }); try { await screen.orientation.lock("landscape"); } catch (e) {} return; } catch (e) {} }
+  document.body.classList.add("theater"); window.scrollTo(0, 0);
+});
+document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) { try { screen.orientation.unlock(); } catch (e) {} } });
+
+function seekTo(t) {
+  t = Math.max(0, Math.min(DUR() - 0.2, t));
+  if (st.modal === "ex") closeExamples();
+  vid.currentTime = t; showPos(t);
+  if (!st.started) { unlockAudio(); play(); } else if (vid.paused && !st.modal && !st.ended) play();
+}
+function showPos(t) { const pc = (t / DUR() * 100) + "%"; $("fill").style.width = pc; $("knob").style.left = pc; $("time").textContent = fmt(t) + " / " + fmt(DUR()); }
+(() => {
+  const bar = $("bar"); let drag = null;
+  const tAt = (x) => { const r = bar.getBoundingClientRect(); return Math.max(0, Math.min(1, (x - r.left) / r.width)) * DUR(); };
+  bar.addEventListener("pointerdown", (e) => {
+    if (st.modal === "quiz" || st.modal === "end" || st.modal === "final") return;
+    const mk = e.target.closest(".mk.ex");
+    drag = { id: e.pointerId, x0: e.clientX, t: mk ? +mk.dataset.t + 0.1 : tAt(e.clientX), moved: false };
+    st.scrubbing = true; bar.setPointerCapture(e.pointerId); showPos(drag.t); e.preventDefault();
+  });
+  bar.addEventListener("pointermove", (e) => { if (!drag || e.pointerId !== drag.id) return; if (Math.abs(e.clientX - drag.x0) > 4) drag.moved = true; if (drag.moved) { drag.t = tAt(e.clientX); showPos(drag.t); } });
+  const end = (e) => { if (!drag || e.pointerId !== drag.id) return; const t = drag.t; drag = null; st.scrubbing = false; seekTo(t); };
+  bar.addEventListener("pointerup", end); bar.addEventListener("pointercancel", end);
+})();
+document.addEventListener("keydown", (e) => { if (st.modal || e.target !== document.body) return; if (e.key === "ArrowRight") { e.preventDefault(); seekTo(vid.currentTime + 5); } if (e.key === "ArrowLeft") { e.preventDefault(); seekTo(vid.currentTime - 5); } });
+
+let stallT = null;
+const showBuf = (on) => { $("buf").hidden = !on; clearTimeout(stallT); if (on) stallT = setTimeout(() => { if (!vid.paused && vid.readyState < 3) { const t = vid.currentTime; vid.currentTime = t + 0.01; vid.play().catch(() => {}); } }, 6000); };
+["waiting", "seeking"].forEach((ev) => vid.addEventListener(ev, () => { if (!vid.paused) showBuf(true); }));
+["playing", "canplay", "seeked", "pause"].forEach((ev) => vid.addEventListener(ev, () => { if (ev !== "seeked" || vid.readyState >= 3) showBuf(false); }));
+
+function tick() {
+  if (st.scrubbing || M.soon) return;
+  const t = vid.currentTime; showPos(t); const v = V(M);
+  const cue = st.ccOn ? v.cues.find((c) => t >= c.s && t < c.e) : null;
+  $("cap").hidden = !cue; if (cue) $("cap").textContent = cue.t;
+  const ch = v.chapters.filter((c) => t >= c.t).pop(); $("chapName").textContent = ch ? ch.n : T().welcome;
+  const k = Object.keys(v.hot).find((key) => t >= v.hot[key][0] && t <= v.hot[key][1]);
+  if (k && !st.modal && st.started) { hot.hidden = false; hot.dataset.k = k; $("hotLabel").textContent = v.examples[k].label; } else hot.hidden = true;
+  if (!st.modal && !vid.paused) {
+    const due = v.quiz.find((q) => S.answered[q.id] === undefined && q.t <= t && q.t > st.lastT - 0.05);
+    if (due) { if (t - st.lastT > 1.5) st.resumeAt = t; vid.pause(); vid.currentTime = due.t; openQuiz(due); }
+  }
+  st.lastT = t;
+}
+vid.addEventListener("timeupdate", tick);
+vid.addEventListener("seeked", () => { st.lastT = Math.min(st.lastT, vid.currentTime); tick(); });
+(function loop() { if (!vid.paused) tick(); requestAnimationFrame(loop); })();
+hot.addEventListener("click", () => openExamples(hot.dataset.k));
+vid.addEventListener("ended", showResults);
+
+function closeLayer() { clearInterval(cdTimer); cdTimer = null; layer.hidden = true; layer.innerHTML = ""; st.modal = null; }
+
+/* ---------- example cards with auto-resume ---------- */
+let cdTimer = null;
+function openExamples(k) {
+  const ex = V(M).examples[k]; st.wasPlaying = !vid.paused && st.started; pause();
+  if (!S.seen[k]) { S.seen[k] = true; gainXP(XP.example); }
+  scoreLine(); buildMarks(); st.modal = "ex"; hot.hidden = true; const AUTO = 25;
+  layer.innerHTML = `<div class="panel pop" role="dialog" aria-modal="true" aria-labelledby="exTitle">
+    <div class="panel-head"><span class="kicker">${esc(M.title[LANG])} · ${T().exKicker} · ${xpt(XP.example)}</span><h3 id="exTitle">${esc(ex.title)}</h3></div>
+    <div class="panel-body">${ex.body}</div>
+    <div class="panel-foot">
+      <button class="btn primary" id="exGo" type="button">${st.wasPlaying ? T().cont : T().close}</button>
+      ${st.wasPlaying ? `<button class="btn ghost" id="exHold" type="button">${T().keep}</button>
+      <div class="countdown" id="cd"><span id="cdText">${T().cd(AUTO)}</span><div class="cd-track"><div class="cd-fill" id="cdFill"></div></div></div>` : ""}
+    </div></div>`;
+  layer.hidden = false; $("exGo").focus(); $("exGo").addEventListener("click", closeExamples);
+  if (st.wasPlaying) {
+    let left = AUTO * 10;
+    cdTimer = setInterval(() => { left--; $("cdFill").style.width = (left / (AUTO * 10) * 100) + "%"; $("cdText").textContent = T().cd(Math.ceil(left / 10)); if (left <= 0) closeExamples(); }, 100);
+    $("exHold").addEventListener("click", () => { clearInterval(cdTimer); cdTimer = null; $("cd").innerHTML = "<span>" + T().hold + "</span>"; $("exHold").remove(); });
+  }
+}
+function closeExamples() { const p = st.wasPlaying; closeLayer(); if (p) play(); }
+layer.addEventListener("keydown", (e) => { if (e.key === "Escape" && st.modal === "ex") closeExamples(); });
+
+/* ---------- scenario questions: two tries ---------- */
+function openQuiz(q) {
+  const v = V(M); st.modal = "quiz"; hot.hidden = true; st.tries[q.id] = 0; const n = v.quiz.indexOf(q) + 1;
+  layer.innerHTML = `<div class="panel pop" id="qPanel" role="dialog" aria-modal="true" aria-labelledby="qTitle">
+    <div class="panel-head"><span class="kicker">${T().scen(n, v.quiz.length)}${st.resumeAt ? T().skip : ""} · ${T().firstTry} ${xpt(XP.first)}</span><h3 id="qTitle">${esc(q.q)}</h3></div>
+    <div class="panel-body"><div class="opts">${q.o.map((o, i) => `<button class="opt" type="button" data-i="${i}"><span class="k">${"ABCD"[i]}</span><span>${esc(o)}</span></button>`).join("")}</div><div id="fb"></div></div>
+    <div class="panel-foot" id="qFoot" hidden><button class="btn primary" id="qGo" type="button">${T().cont}</button></div></div>`;
+  layer.hidden = false; layer.querySelector(".opt").focus();
+  layer.querySelectorAll(".opt").forEach((b) => b.addEventListener("click", () => answer(q, +b.dataset.i)));
+}
+function answer(q, i) {
+  const ok = i === q.a; const opts = layer.querySelectorAll(".opt"); st.tries[q.id]++; const first = st.tries[q.id] === 1;
+  if (!ok && first) {
+    opts[i].classList.add("wrong"); opts[i].disabled = true;
+    $("fb").innerHTML = `<div class="feedback bad"><strong>${T().notQuite}</strong><span class="hint">${T().hint}: ${esc(q.hint)}</span></div>`;
+    $("qPanel").classList.remove("pop", "shake"); void $("qPanel").offsetWidth; $("qPanel").classList.add("shake"); chime(false); return;
+  }
+  opts.forEach((b) => (b.disabled = true)); opts[q.a].classList.add("right"); if (!ok) opts[i].classList.add("wrong");
+  const pts = ok ? (first ? XP.first : XP.second) : 0;
+  S.answered[q.id] = ok ? (first ? 2 : 1) : 0; if (pts) gainXP(pts); save(); buildMarks(); scoreLine();
+  $("fb").innerHTML = ok
+    ? `<div class="feedback ok pop"><strong>${first ? T().correct : T().second}</strong><span class="xpgain">${xpt(pts)}</span><span>${esc(q.why)}</span></div>`
+    : `<div class="feedback bad"><strong>${T().answer}</strong><span>${T().best} <b>${"ABCD"[q.a]}: ${esc(q.o[q.a])}</b><br>${esc(q.why)}</span></div>`;
+  if (ok) { confetti(); chime(true); } else { $("qPanel").classList.remove("pop", "shake"); void $("qPanel").offsetWidth; $("qPanel").classList.add("shake"); chime(false); }
+  $("qFoot").hidden = false; $("qGo").focus();
+  $("qGo").addEventListener("click", () => {
+    closeLayer(); const target = st.resumeAt; const v = V(M);
+    const next = target ? v.quiz.find((x) => S.answered[x.id] === undefined && x.t > q.t && x.t <= target) : null;
+    if (next) { vid.currentTime = next.t; openQuiz(next); return; }
+    st.resumeAt = null; vid.currentTime = target ? target : q.t + 0.05; st.lastT = vid.currentTime; play();
+  });
+}
+
+/* ---------- end of a module ---------- */
+function showResults() {
+  st.ended = true; const firstTime = !S.done; const v = V(M);
+  v.quiz.forEach((q) => { if (S.answered[q.id] === undefined) S.answered[q.id] = 0; });
+  if (firstTime) { S.done = true; gainXP(XP.finish); }
+  save(); renderJourney(); renderBadges(); buildMarks(); scoreLine();
+  const right = Object.values(S.answered).filter((x) => x > 0).length, total = v.quiz.length;
+  const nextI = AV.find((k) => k > cur); const last = allDone();
+  st.modal = "end";
+  layer.innerHTML = `<div class="panel pop" role="dialog" aria-modal="true" aria-labelledby="rTitle">
+    <div class="panel-head"><span class="kicker">${T().video} ${M.n} ${T().complete}${firstTime ? " · " + xpt(XP.finish) : ""}</span><h3 id="rTitle">${esc(M.title[LANG])}: ${right === total ? T().allRight : right >= total - 1 ? T().strong : T().another}</h3></div>
+    <div class="panel-body">
+      <div class="big-badge"><span class="medal">${M.medal}</span><div><b>${esc(M.badge[LANG])}</b><span>${firstTime ? T().unlocked : T().already}</span></div></div>
+      <div class="score"><bdi dir="ltr">${right} / ${total}</bdi></div>
+      <div class="result-row">${v.quiz.map((q, i) => { const r = S.answered[q.id]; return `<span class="${r > 0 ? "r-ok" : "r-bad"}"><bdi>${i + 1} ${r === 2 ? "✓" : r === 1 ? "✓✓" : "✕"}</bdi></span>`; }).join("")}</div>
+      <p>${T().exOpened(Object.keys(S.seen).length, Object.keys(v.hot).length)}</p>
+      <p class="tip">${T().total}: <b>${xpt(P.xp, false)}</b>.${nextI !== undefined && !last ? T().nextUnlocked : ""}</p></div>
+    <div class="panel-foot">
+      ${last ? `<button class="btn primary" id="finalGo" type="button">${T().finalBtn}</button>` : nextI !== undefined ? `<button class="btn primary" id="nextBtn" type="button">${T().next}: ${esc(MODS[nextI].title[LANG])}</button>` : ""}
+      <button class="btn ghost" id="again" type="button">${T().again}</button></div></div>`;
+  layer.hidden = false; confetti(); chime(true);
+  if ($("nextBtn")) $("nextBtn").addEventListener("click", () => { closeLayer(); loadModule(nextI, true); });
+  if ($("finalGo")) $("finalGo").addEventListener("click", () => showFinal(false));
+  $("again").addEventListener("click", restart);
+}
+function restart() { closeLayer(); st.ended = false; st.lastT = 0; st.resumeAt = null; vid.currentTime = 0; play(); }
+
+/* ---------- final screen: name, leaderboard (this device), certificate ---------- */
+function boardHTML() {
+  const rows = [...BOARD].sort((a, b) => b.xp - a.xp || a.t - b.t);
+  if (!rows.length) return `<p class="tip">${T().noBoard}</p>`;
+  const me = (P.name || "").trim().toLowerCase();
+  return `<ol class="lb">${rows.map((r, i) => `<li class="${r.name.trim().toLowerCase() === me ? "me" : ""}${i < 3 ? " top" + (i + 1) : ""}"><span class="rk">${i + 1}</span><span class="nm">${esc(r.name)}${r.name.trim().toLowerCase() === me ? ` <em>· ${T().you}</em>` : ""}</span><span class="pt">${r.xp} XP</span></li>`).join("")}</ol>`;
+}
+function record(name) {
+  const k = name.trim().toLowerCase(); const i = BOARD.findIndex((r) => r.name.trim().toLowerCase() === k);
+  const row = { name: name.trim(), xp: P.xp, t: Date.now() };
+  if (i >= 0) { if (P.xp >= BOARD[i].xp) BOARD[i] = row; } else BOARD.push(row);
+  save();
+}
+function showFinal(onlyBoard) {
+  pause(); st.modal = onlyBoard ? "board" : "final";
+  const done = allDone();
+  layer.innerHTML = `<div class="panel pop wide" role="dialog" aria-modal="true" aria-labelledby="fTitle">
+    <div class="panel-head"><span class="kicker">${done ? T().finalK + " · " + xpt(P.xp, false) : T().board}</span><h3 id="fTitle">${done && !onlyBoard ? T().finalH : T().board}</h3></div>
+    <div class="panel-body">
+      ${done && !onlyBoard ? `<form id="nameForm" class="field"><label for="pName">${T().nameL}</label><div class="row"><input id="pName" maxlength="40" autocomplete="name" value="${esc(P.name || "")}" required><button class="btn primary" type="submit">${T().save}</button></div></form>` : ""}
+      <div class="lb-head">${onlyBoard ? "" : `<b>${T().board}</b>`}<span>${T().boardNote}</span></div>
+      <div id="lbOut">${boardHTML()}</div>
+      <div id="certOut"></div></div>
+    <div class="panel-foot">
+      ${done && !onlyBoard ? `<button class="btn ghost" id="certMake" type="button">${T().makeCert}</button><a class="btn ghost" id="certSave" hidden download="Skills-Bank-Alpha-Leader-certificate.png">${T().dl}</a>` : ""}
+      ${done ? `<button class="btn ghost" id="newP" type="button">${T().newP}</button>` : ""}
+      <button class="btn ghost" id="fClose" type="button">${T().close}</button></div></div>`;
+  layer.hidden = false;
+  $("fClose").addEventListener("click", closeLayer);
+  if ($("nameForm")) {
+    $("pName").focus();
+    $("nameForm").addEventListener("submit", (e) => { e.preventDefault(); const n = $("pName").value.trim(); if (!n) return; P.name = n; record(n); $("lbOut").innerHTML = boardHTML(); confetti(); chime(true); });
+    $("certMake").addEventListener("click", () => { const n = $("pName").value.trim(); if (!n) { $("pName").focus(); return; } P.name = n; record(n); $("lbOut").innerHTML = boardHTML();
+      const url = drawCert(n).toDataURL("image/png"); $("certOut").innerHTML = `<img class="cert-img" alt="" src="${url}">`; $("certSave").href = url; $("certSave").hidden = false; confetti(); chime(true); });
+  }
+  if ($("newP")) $("newP").addEventListener("click", () => { P = blank(); save(); $("xpNum").textContent = 0; closeLayer(); loadModule(AV[0], true); });
+}
+$("boardBtn").addEventListener("click", () => { if (!st.modal) showFinal(true); });
+
+function drawCert(name) {
+  const ar = LANG === "ar"; const c = document.createElement("canvas"); c.width = 1600; c.height = 1130; const x = c.getContext("2d");
+  const AF = "'IBM Plex Sans Arabic', 'IBM Plex Sans', Arial", HF = ar ? "'Cairo', Arial" : "Anton, Impact, sans-serif";
+  const g = x.createRadialGradient(800, 420, 100, 800, 560, 1000); g.addColorStop(0, "#23237a"); g.addColorStop(1, "#080828"); x.fillStyle = g; x.fillRect(0, 0, 1600, 1130);
+  x.strokeStyle = "#FFBC3A"; x.lineWidth = 6; x.strokeRect(40, 40, 1520, 1050); x.lineWidth = 1.5; x.strokeRect(58, 58, 1484, 1014);
+  x.textAlign = "center"; x.direction = ar ? "rtl" : "ltr";
+  x.fillStyle = "#FFBC3A"; x.font = `600 26px ${AF}`; x.fillText(T().certTop, 800, 170);
+  x.fillStyle = "#EBF4FF"; x.font = "400 104px Anton, Impact, sans-serif"; x.direction = "ltr"; x.fillText("Alpha Leader", 800, 310); x.direction = ar ? "rtl" : "ltr";
+  x.font = `500 30px ${AF}`; x.fillStyle = "#a9b4d6"; x.fillText(T().certLine1, 800, 450);
+  x.fillStyle = "#FFFFFF"; x.font = `${ar ? 800 : 400} 92px ${HF}`; x.fillText(name, 800, 575);
+  x.fillStyle = "#FFBC3A"; x.fillRect(500, 615, 600, 5);
+  x.fillStyle = "#EBF4FF"; x.font = `500 30px ${AF}`; x.fillText(T().certLine2(P.xp), 800, 690);
+  const show = AV; show.forEach((i, k) => { const m = MODS[i]; const cx = 800 + (k - (show.length - 1) / 2) * 300; x.beginPath(); x.arc(cx, 840, 58, 0, Math.PI * 2); x.fillStyle = "#FFBC3A"; x.fill(); x.lineWidth = 6; x.strokeStyle = "#fff"; x.stroke();
+    x.fillStyle = "#2a1d00"; x.font = "400 44px Anton, Impact, sans-serif"; x.fillText(m.medal, cx, 856); x.fillStyle = "#EBF4FF"; x.font = `600 24px ${AF}`; x.fillText(m.badge[LANG], cx, 940); });
+  x.fillStyle = "#a9b4d6"; x.font = `500 22px ${AF}`; x.direction = "ltr";
+  x.fillText(new Date().toLocaleDateString(ar ? "ar-EG" : "en-GB", { day: "numeric", month: "long", year: "numeric" }) + " · © 2026 Skills Bank", 800, 1045);
+  return c;
+}
+
+$("resetBtn").addEventListener("click", () => {
+  if (st.modal) return; st.modal = "reset";
+  layer.innerHTML = `<div class="panel pop" role="dialog" aria-modal="true" aria-labelledby="zTitle"><div class="panel-head"><span class="kicker">${T().reset}</span><h3 id="zTitle">${T().resetQ}</h3></div>
+    <div class="panel-body"><p class="tip">${T().resetNote}</p></div>
+    <div class="panel-foot"><button class="btn primary" id="zYes" type="button">${T().resetYes}</button><button class="btn ghost" id="zNo" type="button">${T().resetNo}</button></div></div>`;
+  layer.hidden = false; $("zNo").focus();
+  $("zNo").addEventListener("click", closeLayer);
+  $("zYes").addEventListener("click", () => { P = blank(); save(); $("xpNum").textContent = 0; closeLayer(); loadModule(AV[0], true); });
+});
+
+/* ---------- celebration ---------- */
+function confetti() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c = $("confetti"); c.hidden = false; const x = c.getContext("2d"); const W = (c.width = innerWidth * devicePixelRatio), H = (c.height = innerHeight * devicePixelRatio);
+  const cols = ["#FFBC3A", "#EBF4FF", "#40BDA9", "#4D88E8", "#F26444"];
+  const Pt = Array.from({ length: 160 }, () => ({ x: W / 2 + (Math.random() - .5) * W * .3, y: H * .45, vx: (Math.random() - .5) * 22 * devicePixelRatio, vy: (-Math.random() * 20 - 8) * devicePixelRatio, s: (6 + Math.random() * 7) * devicePixelRatio, r: Math.random() * 6, vr: (Math.random() - .5) * .3, c: cols[Math.floor(Math.random() * cols.length)] }));
+  let f = 0; (function step() { x.clearRect(0, 0, W, H); Pt.forEach((p) => { p.vy += .55 * devicePixelRatio; p.x += p.vx; p.y += p.vy; p.vx *= .99; p.r += p.vr; x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); x.restore(); });
+    if (++f < 150) requestAnimationFrame(step); else { x.clearRect(0, 0, W, H); c.hidden = true; } })();
+}
+let AC = null; function unlockAudio() { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); AC.resume(); } catch (e) {} }
+function chime(good) {
+  if (!AC) return; const t0 = AC.currentTime; const notes = good ? [523.25, 659.25, 783.99, 1046.5] : [311.13, 233.08];
+  notes.forEach((f, i) => { const o = AC.createOscillator(), g = AC.createGain(); o.type = good ? "triangle" : "sine"; o.frequency.value = f; const s = t0 + i * (good ? .09 : .16);
+    g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(.18, s + .02); g.gain.exponentialRampToValueAtTime(.001, s + (good ? .5 : .35)); o.connect(g).connect(AC.destination); o.start(s); o.stop(s + .6); });
+}
+
+/* ---------- boot ---------- */
+applyLang(); $("xpNum").textContent = P.xp;
+(() => {
+  const m = /^#video-([1-9])$/.exec(location.hash); let i = m ? +m[1] - 1 : P.mods.findIndex((x, k) => !x.done && !MODS[k].soon);
+  if (i < 0 || i >= MODS.length || !unlocked(i)) i = AV.find((k) => unlocked(k) && !P.mods[k].done); if (i === undefined) i = AV[0];
+  loadModule(i, false);
+})();
+
+</script>
+</body>
+</html>
